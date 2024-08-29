@@ -1,0 +1,19 @@
+set default-bg "#333333"  # Background
+set default-fg "#FFFF99"  # Foreground (text color)
+set completion-bg "#333333"
+set completion-fg "#FFFF99"
+set completion-group-bg "#333333"
+set completion-group-fg "#FFFF99"
+set inputbar-bg "#333333"
+set inputbar-fg "#FFFF99"
+set notification-error-bg "#FF0000"
+set notification-error-fg "#FFFFFF"
+set notification-warning-bg "#FFFF00"
+set notification-warning-fg "#000000"
+set notification-bg "#333333"
+set notification-fg "#FFFF99"
+set recolor "true"  # Enable recolor
+set recolor-darkcolor "#333333"
+set recolor-lightcolor "#FFFF99"
+
+set window-title {basename} - {page}
