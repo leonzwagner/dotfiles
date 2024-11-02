@@ -7,6 +7,25 @@ return {
     end,
   },
 
+  { 'hrsh7th/cmp-nvim-lsp' },
+
+  {
+    'VonHeikemen/lsp-zero.nvim',
+    branch = 'v4.x',
+    config = function()
+      local lsp_zero = require("lsp-zero")
+      lsp_zero.format_on_save({
+        format_opts = {
+          async = true,
+          timeout_ms = 10000,
+        },
+        servers = {
+          ['clangd'] = { 'c', 'cpp' },
+        }
+      })
+    end
+  },
+
   -- These are some examples, uncomment them if you want to see them work!
   -- lspconfig
   {
@@ -41,6 +60,12 @@ return {
         "texlab",
         "biome",
         "gopls",
+        "eslint-lsp",
+        "clangd",
+        "svelte-language-server",
+        "texlab",
+        "kotlin-language-server",
+        "typst-lsp"
       },
     },
   },
@@ -59,6 +84,8 @@ return {
         "python",
         "typescript",
         "javascript",
+        "jsx",
+        "tsx",
         "dockerfile",
         "json",
         "org",
@@ -67,7 +94,19 @@ return {
         "gomod",
         "gowork",
         "gosum",
+        "c",
+        "cpp",
+        "cmake",
+        "make",
+        "svelte",
+        "latex",
+        "markdown",
+        "typst"
       },
+      highlight = {
+        enable = true,
+        additional_vim_regex_highlighting = { "latex", "markdown" }
+      }
     },
   },
 
@@ -76,17 +115,17 @@ return {
     "nvim-treesitter/nvim-treesitter-context",
     config = function()
       require("nvim-treesitter-context").setup {
-        enable = true, -- Enable this plugin (Can be enabled/disabled later via commands)
-        max_lines = 0, -- How many lines the window should span. Values <= 0 mean no limit.
-        min_window_height = 0, -- Minimum editor window height to enable context. Values <= 0 mean no limit.
+        enable = true,            -- Enable this plugin (Can be enabled/disabled later via commands)
+        max_lines = 0,            -- How many lines the window should span. Values <= 0 mean no limit.
+        min_window_height = 0,    -- Minimum editor window height to enable context. Values <= 0 mean no limit.
         line_numbers = true,
         multiline_threshold = 20, -- Maximum number of lines to show for a single context
-        trim_scope = "outer", -- Which context lines to discard if `max_lines` is exceeded. Choices: 'inner', 'outer'
-        mode = "cursor", -- Line used to calculate context. Choices: 'cursor', 'topline'
+        trim_scope = "outer",     -- Which context lines to discard if `max_lines` is exceeded. Choices: 'inner', 'outer'
+        mode = "cursor",          -- Line used to calculate context. Choices: 'cursor', 'topline'
         -- Separator between context and content. Should be a single character string, like '-'.
         -- When separator is set, the context will only show up when there are at least 2 lines above cursorline.
         separator = nil,
-        zindex = 20, -- The Z-index of the context window
+        zindex = 20,     -- The Z-index of the context window
         on_attach = nil, -- (fun(buf: integer): boolean) return false to disable attaching
       }
     end,
@@ -95,7 +134,7 @@ return {
   -- autosave
   {
     "okuuva/auto-save.nvim",
-    cmd = "ASToggle", -- optional for lazy loading on command
+    cmd = "ASToggle",                         -- optional for lazy loading on command
     event = { "InsertLeave", "TextChanged" }, -- optional for lazy loading on trigger events
     opts = {
       -- your config goes here
@@ -109,6 +148,8 @@ return {
     ft = {
       "javascriptreact",
       "typescriptreact",
+      "javascript",
+      "typescript",
       "html",
     },
     config = function()
@@ -140,9 +181,9 @@ return {
           suggestion_color = "#ffffff",
           cterm = 244,
         },
-        log_level = "info", -- set to "off" to disable logging completely
+        log_level = "info",                -- set to "off" to disable logging completely
         disable_inline_completion = false, -- disables inline completion for use with cmp
-        disable_keymaps = false, -- disables built in keymaps for more manual control
+        disable_keymaps = false,           -- disables built in keymaps for more manual control
       }
     end,
   },
@@ -176,47 +217,40 @@ return {
       require("dbee").install()
     end,
     config = function()
-      require("dbee").setup(--[[optional config]])
+      require("dbee").setup( --[[optional config]])
     end,
   },
 
-  -- --latex
-  -- {
-  --   "lervag/vimtex",
-  --   lazy = false, -- we don't want to lazy load VimTeX
-  --   -- tag = "v2.15", -- uncomment to pin to a specific release
-  --   ft = { "tex" },
-  --   init = function()
-  --     -- VimTeX configuration goes here
-  --     vim.cmd "filetype plugin indent on"
-  --     vim.cmd "syntax enable"
-  --
-  --     -- Viewer options
-  --     vim.g.vimtex_view_method = "zathura"
-  --     -- vim.g.vimtex_view_general_viewer = 'okular'
-  --     vim.g.vimtex_view_general_options = "--unique file:@pdf\\#src:@line@tex"
-  --
-  --     -- Compiler method
-  --     vim.g.vimtex_compiler_method = "tectonic"
-  --
-  --     -- Mapping local leader key
-  --     --[[  vim.g.maplocalleader = "," ]]
-  --
-  --     -- Autocmd to set b: vimtex_main
-  --     vim.api.nvim_create_augroup("VimTeX", { clear = true })
-  --     vim.api.nvim_create_autocmd("BufReadPre", {
-  --       group = "VimTeX",
-  --       pattern = "$HOME/Note-Taking/*",
-  --       callback = function()
-  --         vim.b.vimtex_main = "$HOME/Note-Taking/Math/*.tex"
-  --       end,
-  --     })
-  --   end,
-  --   keys = {
-  --     { "<localleader>ll", ":VimtexCompile<CR>", desc = "Compile LaTeX" },
-  --     { "<localleader>lv", ":VimtexView<CR>", desc = "View PDF" },
-  --   },
-  -- },
+  -- prettierme
+  {
+    "ruyadorno/prettierme",
+    config = function()
+      require("prettierme").setup()
+    end,
+  },
+
+  {
+    "lervag/vimtex",
+    lazy = false, -- we don't want to lazy load VimTeX
+    -- tag = "v2.15", -- uncomment to pin to a specific release
+    init = function()
+      -- VimTeX configuration goes here, e.g.
+
+      --viewer method
+      vim.g.vimtex_view_method = "sumatrapdf"
+      vim.g.vimtex_compiler_method = 'latexrun'
+      vim.g.vimtex_view_general_options = [[--unique file:@pdf\#src:@line@tex]]
+
+      vim.g.vimtex_quickfix_enabled = 1
+      vim.g.vimtex_syntax_enabled = 1
+      vim.g.vimtex_quickfix_mode = 0
+
+      -- Mapping local leader
+      vim.g.maplocalleader = ","
+    end,
+
+    ft = "tex"
+  },
 
   --rainbow indent
   {
@@ -273,30 +307,30 @@ return {
     opts = {},
     config = function()
       require("cord").setup {
-        usercmds = true, -- Enable user commands
-        log_level = "error", -- One of 'trace', 'debug', 'info', 'warn', 'error', 'off'
+        usercmds = true,           -- Enable user commands
+        log_level = "error",       -- One of 'trace', 'debug', 'info', 'warn', 'error', 'off'
         timer = {
-          interval = 1500, -- Interval between presence updates in milliseconds (min 500)
-          reset_on_idle = false, -- Reset start timestamp on idle
+          interval = 1500,         -- Interval between presence updates in milliseconds (min 500)
+          reset_on_idle = false,   -- Reset start timestamp on idle
           reset_on_change = false, -- Reset start timestamp on presence change
         },
         editor = {
-          image = nil, -- Image ID or URL in case a custom client id is provided
-          client = "neovim", -- vim, neovim, lunarvim, nvchad, astronvim or your application's client id
+          image = nil,                          -- Image ID or URL in case a custom client id is provided
+          client = "neovim",                    -- vim, neovim, lunarvim, nvchad, astronvim or your application's client id
           tooltip = "The Superior Text Editor", -- Text to display when hovering over the editor's image
         },
         display = {
-          show_time = true, -- Display start timestamp
-          show_repository = true, -- Display 'View repository' button linked to repository url, if any
+          show_time = true,             -- Display start timestamp
+          show_repository = true,       -- Display 'View repository' button linked to repository url, if any
           show_cursor_position = false, -- Display line and column number of cursor's position
-          swap_fields = false, -- If enabled, workspace is displayed first
-          swap_icons = false, -- If enabled, editor is displayed on the main image
-          workspace_blacklist = {}, -- List of workspace names to hide
+          swap_fields = false,          -- If enabled, workspace is displayed first
+          swap_icons = false,           -- If enabled, editor is displayed on the main image
+          workspace_blacklist = {},     -- List of workspace names to hide
         },
         lsp = {
           show_problem_count = false, -- Display number of diagnostics problems
-          severity = 1, -- 1 = Error, 2 = Warning, 3 = Info, 4 = Hint
-          scope = "workspace", -- buffer or workspace
+          severity = 1,               -- 1 = Error, 2 = Warning, 3 = Info, 4 = Hint
+          scope = "workspace",        -- buffer or workspace
         },
         idle = {
           enable = true, -- Enable idle status
@@ -307,18 +341,18 @@ return {
           tooltip = "💤", -- Text to display when hovering over the idle image
         },
         text = {
-          viewing = "Viewing {}", -- Text to display when viewing a readonly file
-          editing = "Editing {}", -- Text to display when editing a file
-          file_browser = "Browsing files in {}", -- Text to display when browsing files (Empty string to disable)
+          viewing = "Viewing {}",                    -- Text to display when viewing a readonly file
+          editing = "Editing {}",                    -- Text to display when editing a file
+          file_browser = "Browsing files in {}",     -- Text to display when browsing files (Empty string to disable)
           plugin_manager = "Managing plugins in {}", -- Text to display when managing plugins (Empty string to disable)
-          lsp_manager = "Configuring LSP in {}", -- Text to display when managing LSP servers (Empty string to disable)
-          vcs = "Committing changes in {}", -- Text to display when using Git or Git-related plugin (Empty string to disable)
-          workspace = "In {}", -- Text to display when in a workspace (Empty string to disable)
+          lsp_manager = "Configuring LSP in {}",     -- Text to display when managing LSP servers (Empty string to disable)
+          vcs = "Committing changes in {}",          -- Text to display when using Git or Git-related plugin (Empty string to disable)
+          workspace = "In {}",                       -- Text to display when in a workspace (Empty string to disable)
         },
         buttons = {
           {
             label = "View Repository", -- Text displayed on the button
-            url = "git", -- URL where the button leads to ('git' = automatically fetch Git repository URL)
+            url = "git",               -- URL where the button leads to ('git' = automatically fetch Git repository URL)
           },
           -- {
           --   label = 'View Plugin',
@@ -444,6 +478,30 @@ return {
     },
   },
 
+  -- code-snap
+  {
+    "mistricky/codesnap.nvim",
+    build = "make build_generator",
+    keys = {
+      { "<leader>cc", "<cmd>CodeSnap<cr>",     mode = "x", desc = "Save selected code snapshot into clipboard" },
+      { "<leader>cs", "<cmd>CodeSnapSave<cr>", mode = "x", desc = "Save selected code snapshot in ~/Pictures" },
+    },
+    opts = {
+      save_path = "~/Pictures",
+      has_breadcrumbs = true,
+      bg_theme = "bamboo",
+    },
+  },
+
+  -- carbon now
+  {
+    "ellisonleao/carbon-now.nvim",
+    lazy = true,
+    cmd = "CarbonNow",
+    ---@param opts cn.ConfigSchema
+    opts = {},
+  },
+
   -- Neovim Org mode
   -- {
   --   "nvim-orgmode/orgmode",
@@ -464,4 +522,117 @@ return {
   --     -- })
   --   end,
   -- },
+
+  {
+    "nvim-neotest/neotest",
+    dependencies = {
+      "nvim-neotest/nvim-nio",
+      "nvim-lua/plenary.nvim",
+      "antoinemadec/FixCursorHold.nvim",
+      "nvim-treesitter/nvim-treesitter"
+    }
+  },
+
+  {
+    "lervag/vimtex",
+    lazy = false, -- agar VimTeX tidak menggunakan lazy loading
+    -- tag = "v2.15", -- Uncomment jika ingin mengunci pada versi spesifik
+    init = function()
+      -- Konfigurasi VimTeX
+      vim.g.vimtex_view_method = "zathura"                                      -- Menggunakan zathura sebagai PDF viewer
+      vim.g.vimtex_compiler_method =
+      "tectonic"                                                                -- Menggunakan latexmk untuk compile LaTeX
+      vim.g.maplocalleader = ","                                                -- Mengatur local leader key
+      vim.g.vimtex_view_general_options = [[--unique file:@pdf\#src:@line@tex]] -- Viewer dengan opsi untuk sinkronisasi
+      vim.g.vimtex_quickfix_enabled = 1                                         -- Mengaktifkan quickfix window untuk error/warning
+      vim.g.vimtex_syntax_enabled = 1                                           -- Mengaktifkan syntax highlighting untuk LaTeX
+      vim.g.vimtex_quickfix_mode = 0                                            -- Menonaktifkan quickfix auto-jump ke error pertama
+      vim.g.vimtex_compile_on_writing = 1                                       -- otomatis kompilasi saat menulis
+      vim.api.nvim_set_keymap('n', '<F5>', ':VimtexCompile<CR>', { noremap = true, silent = true })
+    end,
+    ft = "tex", -- Hanya aktif pada file dengan ekstensi .tex
+  },
+
+  {
+    "azpect3120/gomon.nvim",
+    dependencies = { "nvim-lua/plenary.nvim" },
+    config = function()
+      -- REQUIRED
+      require("gomon").setup({
+        window = {
+          -- Style of the output window
+          -- e.g. float, split_right, split_left, split_bottom, split_top
+          style = "float",
+          -- Size of the output window. Only used for float style
+          -- e.g. small, medium, large
+          size = "medium",
+          -- Title of the output window
+          title = " GoMon Output... ",
+          -- Border style of the output window. Only used for float style
+          -- e.g. single, double, rounded, shadow, or an array of chars
+          border = "rounded",
+          -- Wrap text in the output window
+          wrap = false,
+        },
+        -- Open the output window on start
+        display_on_start = true,
+        -- Close the output window on stop
+        close_on_stop = true,
+      })
+    end
+  },
+
+  {
+    'chomosuke/typst-preview.nvim',
+    lazy = false, -- or ft = 'typst'
+    version = '1.*',
+    build = function() require 'typst-preview'.update() end,
+    config = function()
+      require 'typst-preview'.setup {
+        -- Setting this true will enable printing debug information with print()
+        debug = false,
+
+        -- Custom format string to open the output link provided with %s
+        -- Example: open_cmd = 'firefox %s -P typst-preview --class typst-preview'
+        open_cmd = nil,
+
+        -- Setting this to 'always' will invert black and white in the preview
+        -- Setting this to 'auto' will invert depending if the browser has enable
+        -- dark mode
+        -- Setting this to '{"rest": "<option>","image": "<option>"}' will apply
+        -- your choice of color inversion to images and everything else
+        -- separately.
+        invert_colors = 'never',
+
+        -- Whether the preview will follow the cursor in the source file
+        follow_cursor = true,
+
+        -- Provide the path to binaries for dependencies.
+        -- Setting this will skip the download of the binary by the plugin.
+        -- Warning: Be aware that your version might be older than the one
+        -- required.
+        dependencies_bin = {
+          ['tinymist'] = nil,
+          ['websocat'] = nil
+        },
+
+        -- A list of extra arguments (or nil) to be passed to previewer.
+        -- For example, extra_args = { "--input=ver=draft", "--ignore-system-fonts" }
+        extra_args = nil,
+
+        -- This function will be called to determine the root of the typst project
+        get_root = function(path_of_main_file)
+          return vim.fn.fnamemodify(path_of_main_file, ':p:h')
+        end,
+
+        -- This function will be called to determine the main file of the typst
+        -- project.
+        get_main_file = function(path_of_buffer)
+          return path_of_buffer
+        end,
+      }
+    end
+  },
+
+
 }
